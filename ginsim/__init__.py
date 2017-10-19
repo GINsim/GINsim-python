@@ -19,8 +19,8 @@ class GINsim(object):
 
     if colomoto_jupyter.IN_IPYTHON:
         def show(self, lrg):
-            b64 = japi.gs.service("image").base64PNG(lrg)
-            return colomoto_jupyter.show_image(b64)
+            data = japi.gs.service("image").rawPNG(lrg)
+            return colomoto_jupyter.show_image(data)
 
 sys.modules[__name__] = GINsim()
 
