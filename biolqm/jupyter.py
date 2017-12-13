@@ -4,9 +4,9 @@ from colomoto_jupyter import IN_IPYTHON, jupyter_setup
 if IN_IPYTHON:
     menu = [
         {"name": "Upload model",
-            "snippet": ["biolqm.upload()"]},
+            "snippet": ["lqm = biolqm.upload()"]},
         {"name": "Load model",
-            "snippet": ["biolqm.loadModel(\"model.sbml\")"]},
+            "snippet": ["lqm = biolqm.loadModel(\"model.sbml\")"]},
     ]
     jupyter_setup("biolqm",
         label="BioLQM",
