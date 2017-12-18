@@ -16,9 +16,7 @@ if IN_IPYTHON:
         {"name":"Convert to tool",
             "sub-menu": [
             {"name": "Pint",
-                "snippet":[
-                    'assert biolqm.saveModel(lqm, "mymodel.an", "an")',
-                    'an = pypint.load("mymodel.an").simplify()']},
+                "snippet":['biolqm.to_pint(lqm)']},
             ]},
     ]
     jupyter_setup("biolqm",

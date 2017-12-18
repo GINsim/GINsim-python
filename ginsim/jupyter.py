@@ -18,10 +18,11 @@ if IN_IPYTHON:
             {"name": "BioLQM",
                 "snippet":['lqm = lrg.getModel()']},
             {"name": "MaBoSS",
-                "snippet":[
-                    'ginsim.service("maboss").export(lrg, "mymodel.bnd")',
-                    'master_simulation = maboss.load_file("mymodel.bnd", simulation_name="master")']},
+                "snippet":['master_simulation = ginsim.to_maboss(lrg)']},
             ]},
+        "---",
+        {"name": " Display regulatory graph",
+            "snippet": ["ginsim.show(lrg)"]},
     ]
     jupyter_setup("ginsim",
         label="GINsim",

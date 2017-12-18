@@ -1,6 +1,7 @@
 
 import sys
 
+from colomoto_jupyter.sessionfiles import new_output_file
 from colomoto_jupyter.io import ensure_localfile
 
 from .jupyter import upload
@@ -26,3 +27,11 @@ def getModifier(name):
 def getTool(name):
     return japi.lqm.getTool(name)
 
+def to_pint(model, simplify=True):
+    anfile = new_output_file("an")
+    assert saveModel(model, anfile, "an")
+    import pypint
+    an = pypint.load(anfile)
+    if simplify:
+        an = an.simplify()
+    return an
