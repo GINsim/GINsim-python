@@ -8,9 +8,11 @@ from py4j.java_gateway import JavaGateway, GatewayParameters
 __env = {}
 
 class LQMProxy(object):
+    java = None
     gs = None
     lqm = None
     def clear(self):
+        self.java = None
         self.gs = None
         self.lqm = None
 
@@ -27,6 +29,7 @@ def start():
     __env["gw"] = JavaGateway(gateway_parameters=param)
 
     global japi
+    japi.java = __env["gw"]
     japi.gs = __env["gw"].entry_point
     japi.lqm = japi.gs.LQM()
 
