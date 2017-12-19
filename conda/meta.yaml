@@ -29,7 +29,7 @@ requirements:
 about:
   home:  http://ginsim.org/
   summary: 'GINsim and bioLQM python interface'
-  license_family: LGPG
+  license_family: LGPL
   license: LGPL v3+/CeCILL-C
 
 
