@@ -18,7 +18,7 @@ if IN_IPYTHON:
         {"name":"Export to file",
             "sub-menu": [
                 export_entry("SBML-qual v1.0", "sbml"),
-                "Boolean functions formats",
+                "Functions formats",
                 export_entry("BoolNet", "bnet"),
                 export_entry("BooleanNet", "booleannet"),
                 export_entry("BoolSim", "boolsim"),

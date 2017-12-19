@@ -15,7 +15,7 @@ if IN_IPYTHON:
             ]},
         {"name":"Convert to tool",
             "sub-menu": [
-            {"name": "BioLQM",
+            {"name": "bioLQM",
                 "snippet":['lqm = lrg.getModel()']},
             {"name": "MaBoSS",
                 "snippet":['master_simulation = ginsim.to_maboss(lrg)']},
