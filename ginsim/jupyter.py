@@ -19,6 +19,8 @@ if IN_IPYTHON:
                 "snippet":['lqm = lrg.getModel()']},
             {"name": "MaBoSS",
                 "snippet":['master_simulation = ginsim.to_maboss(lrg)']},
+            {"name": "NuSMV",
+                "snippet":['smv = ginsim.to_nusmv(lrg)']},
             ]},
         "---",
         {"name": " Display regulatory graph",
