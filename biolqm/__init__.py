@@ -27,6 +27,12 @@ def getModifier(name):
 def getTool(name):
     return japi.lqm.getTool(name)
 
+def to_maboss(model, simulation_name="master"):
+    import maboss
+    maboss_file = new_output_file("bnd")
+    assert saveModel(model, maboss_file, "bnd")
+    return maboss.load_file(maboss_file, simulation_name=simulation_name)
+
 def to_pint(model, simplify=True):
     anfile = new_output_file("an")
     assert saveModel(model, anfile, "an")
