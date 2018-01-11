@@ -1,13 +1,12 @@
 
 import sys
 
-from .jupyter import upload
-
-from .gateway import japi, restart
-
 from colomoto_jupyter import *
 from colomoto_jupyter.sessionfiles import new_output_file
 from colomoto_jupyter.io import ensure_localfile
+
+from .jupyter import upload
+from .gateway import japi, restart
 
 def open(filename, *args):
     filename = ensure_localfile(filename)
