@@ -1,5 +1,5 @@
 {% set name = "ginsim-python" %}
-{% set version = "0.2.90" %}
+{% set version = "0.2.91" %}
 package:
   name: '{{ name|lower }}'
   version: '{{ version }}'
