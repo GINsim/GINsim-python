@@ -10,7 +10,7 @@ from colomoto_jupyter.io import ensure_localfile
 from .jupyter import upload
 from .gateway import japi, restart
 
-def open(filename, *args):
+def load(filename, *args):
     filename = ensure_localfile(filename)
     return japi.gs.open(filename, *args)
 

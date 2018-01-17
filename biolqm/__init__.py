@@ -8,7 +8,7 @@ from .jupyter import upload
 
 from ginsim.gateway import japi, restart
 
-def loadModel(filename, *args):
+def load(filename, *args):
     filename = ensure_localfile(filename)
     return japi.lqm.loadModel(filename, *args)
 
