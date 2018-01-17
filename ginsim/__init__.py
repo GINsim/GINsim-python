@@ -1,6 +1,8 @@
 
 import sys
 
+import biolqm
+
 from colomoto_jupyter import *
 from colomoto_jupyter.sessionfiles import new_output_file
 from colomoto_jupyter.io import ensure_localfile
@@ -21,11 +23,10 @@ if IN_IPYTHON:
         return show_image(data)
 
 def to_maboss(lrg, simulation_name="master"):
-    import maboss
-    maboss_file = new_output_file("bnd")
-    service("maboss").export(lrg, maboss_file)
-    return maboss.load_file(maboss_file, "%s.cfg" % maboss_file,
-            simulation_name=simulation_name)
+    return biolqm.to_maboss(lrg.getModel(), simulation_name)
+
+def to_pint(lrg, simplify=True):
+    return biolqm.to_pint(lrg.getModel(), simplify)
 
 __nusmvReserved = [ "MODULE", "DEFINE", "MDEFINE",
     "CONSTANTS", "VAR", "IVAR", "FROZENVAR", "INIT", "TRANS", "INVAR",
