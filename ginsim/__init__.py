@@ -12,15 +12,21 @@ from .gateway import japi, restart
 
 def load(filename, *args):
     filename = ensure_localfile(filename)
-    return japi.gs.open(filename, *args)
+    return japi.gs.load(filename, *args)
 
 def service(name):
     return japi.gs.service(name)
 
 if IN_IPYTHON:
-    def show(lrg):
-        data = japi.gs.service("image").rawPNG(lrg)
+    def show(lrg, state=None):
+        if state:
+            data = japi.gs.service("image").rawPNG(lrg, state)
+        else:
+            data = japi.gs.service("image").rawPNG(lrg)
         return show_image(data)
+
+def to_biolqm(lrg):
+    return lrg.getModel()
 
 def to_maboss(lrg, simulation_name="master"):
     return biolqm.to_maboss(lrg.getModel(), simulation_name)
