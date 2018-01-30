@@ -6,7 +6,7 @@ if IN_IPYTHON:
         {"name": "Upload model",
             "snippet": ["lrg = ginsim.upload()"]},
         {"name": "Load model",
-            "snippet": ["lrg = ginsim.open(\"model.zginml\")"]},
+            "snippet": ["lrg = ginsim.load(\"model.zginml\")"]},
         "---",
         {"name":"Export to file",
             "sub-menu": [
@@ -16,11 +16,13 @@ if IN_IPYTHON:
         {"name":"Convert to tool",
             "sub-menu": [
             {"name": "bioLQM",
-                "snippet":['lqm = lrg.getModel()']},
+                "snippet":['lqm = ginsim.to_biolqm()']},
             {"name": "MaBoSS",
-                "snippet":['master_simulation = ginsim.to_maboss(lrg)']},
+                "snippet":['masim = ginsim.to_maboss(lrg)']},
             {"name": "NuSMV",
                 "snippet":['smv = ginsim.to_nusmv(lrg)']},
+            {"name": "Pint",
+                "snippet":['an = ginsim.to_pint(lrg)']},
             ]},
         "---",
         {"name": " Display regulatory graph",
@@ -34,7 +36,7 @@ if IN_IPYTHON:
 
     from colomoto_jupyter.upload import jupyter_upload
     def upload():
-        return jupyter_upload("upload", "open")
+        return jupyter_upload("upload", "load")
 
 else:
     def upload():

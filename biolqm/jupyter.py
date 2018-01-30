@@ -13,7 +13,7 @@ if IN_IPYTHON:
         {"name": "Upload model",
             "snippet": ["lqm = biolqm.upload()"]},
         {"name": "Load model",
-            "snippet": ["lqm = biolqm.loadModel(\"model.sbml\")"]},
+            "snippet": ["lqm = biolqm.load(\"model.sbml\")"]},
         "---",
         {"name":"Export to file",
             "sub-menu": [
@@ -37,7 +37,7 @@ if IN_IPYTHON:
         {"name":"Convert to tool",
             "sub-menu": [
             {"name": "MaBoSS", "snippet": [
-                'master_simulation = biolqm.to_maboss(lqm)']},
+                'masim = biolqm.to_maboss(lqm)']},
             {"name": "Pint", "snippet": [
                 'an = biolqm.to_pint(lqm)']},
             ]},
@@ -50,7 +50,7 @@ if IN_IPYTHON:
 
     from colomoto_jupyter.upload import jupyter_upload
     def upload():
-        return jupyter_upload("upload", "loadModel")
+        return jupyter_upload("upload", "load")
 
 else:
     def upload():
