@@ -28,8 +28,8 @@ if IN_IPYTHON:
 def to_biolqm(lrg):
     return lrg.getModel()
 
-def to_maboss(lrg, simulation_name="master"):
-    return biolqm.to_maboss(lrg.getModel(), simulation_name)
+def to_maboss(lrg):
+    return biolqm.to_maboss(lrg.getModel())
 
 def to_pint(lrg, simplify=True):
     return biolqm.to_pint(lrg.getModel(), simplify)
