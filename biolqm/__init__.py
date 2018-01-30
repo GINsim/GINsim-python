@@ -3,6 +3,7 @@ import sys
 
 from colomoto_jupyter.sessionfiles import new_output_file
 from colomoto_jupyter.io import ensure_localfile
+from colomoto_jupyter import import_colomoto_tool
 
 from .jupyter import upload
 
@@ -28,16 +29,16 @@ def getTool(name):
     return japi.lqm.getTool(name)
 
 def to_maboss(model, simulation_name="master"):
-    import maboss
+    import_colomoto_tool("maboss")
     maboss_file = new_output_file("bnd")
     assert saveModel(model, maboss_file, "bnd")
-    return maboss.load_file(maboss_file, "%s.cfg" % maboss_file,
+    return maboss.load(maboss_file, "%s.cfg" % maboss_file,
                 simulation_name=simulation_name)
 
 def to_pint(model, simplify=True):
     anfile = new_output_file("an")
     assert saveModel(model, anfile, "an")
-    import pypint
+    import_colomoto_tool("pypint")
     an = pypint.load(anfile)
     if simplify:
         an = an.simplify()
