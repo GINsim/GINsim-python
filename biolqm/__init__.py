@@ -92,3 +92,8 @@ def to_pint(model, simplify=True):
     if simplify:
         an = an.simplify()
     return an
+
+from ginsim.gateway import register
+register(sys.modules[__name__])
+del(register)
+

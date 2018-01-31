@@ -1,12 +1,12 @@
 
 import atexit
 import subprocess
-import biolqm
 from subprocess import PIPE
 
 from py4j.java_gateway import JavaGateway, GatewayParameters
 
 __env = {}
+__registered = []
 
 class LQMProxy(object):
     java = None
@@ -33,19 +33,28 @@ def start():
     japi.java = __env["gw"]
     japi.gs = __env["gw"].entry_point
     japi.lqm = japi.gs.LQM()
-    biolqm._japi_start()
+    for module in __registered:
+        module._japi_start()
 
 def stop():
+    if not __env:
+        return
     global japi
     japi.clear()
     __env["gw"].shutdown()
     __env["proc"].terminate()
     __env.clear()
-    biolqm._japi_stop()
+    for module in __registered:
+        module._japi_stop()
 
 def restart():
     stop()
     start()
+
+def register(module):
+    __registered.append(module)
+    if __env:
+        module._japi_start()
 
 start()
 atexit.register(stop)
