@@ -9,6 +9,56 @@ from .jupyter import upload
 
 from ginsim.gateway import japi, restart
 
+_japi_wrappers = set()
+
+class LQMTool:
+    def __init__(self, tool):
+        self.tool = tool
+    
+    def setup(self, model, parameters=''):
+        return self.tool.getSettings(model, parameters)
+    
+    def get(self, settings):
+        return self.tool.getResult(settings)
+    
+    def __call__(self, model, parameters=''):
+        settings = self.setup(model, parameters)
+        return self.get(settings)
+    
+    def __getattr__(self, name):
+        return self.tool.__getattr__(name)
+
+class LQMModifier:
+    def __init__(self, modifier):
+        self.modifier = modifier
+    
+    def __call__(self, model, parameters=None):
+        return self.modifier.getModifiedModel(model, parameters)
+    
+    def __getattr__(self, name):
+        return self.modifier.__getattr__(name)
+
+def _japi_start():
+    current_module = __import__(__name__)
+    
+    for tool in japi.java.jvm.org.colomoto.biolqm.LQMServiceManager.getTools():
+        name = tool.getID()
+        wrapper = LQMTool(tool)
+        setattr(current_module, name, wrapper)
+        _japi_wrappers.add(name)
+
+    for mod in japi.java.jvm.org.colomoto.biolqm.LQMServiceManager.getModifiers():
+        name = mod.getID()
+        wrapper = LQMModifier(mod)
+        setattr(current_module, name, wrapper)
+        _japi_wrappers.add(name)
+
+def _japi_stop():
+    current_module = __import__(__name__)
+    for name in _japi_wrappers:
+        delattr(current_module, name)
+    _japi_wrappers.clear()
+
 def load(filename, *args):
     filename = ensure_localfile(filename)
     return japi.lqm.loadModel(filename, *args)

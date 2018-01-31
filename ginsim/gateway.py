@@ -1,6 +1,7 @@
 
 import atexit
 import subprocess
+import biolqm
 from subprocess import PIPE
 
 from py4j.java_gateway import JavaGateway, GatewayParameters
@@ -32,6 +33,7 @@ def start():
     japi.java = __env["gw"]
     japi.gs = __env["gw"].entry_point
     japi.lqm = japi.gs.LQM()
+    biolqm._japi_start()
 
 def stop():
     global japi
@@ -39,6 +41,7 @@ def stop():
     __env["gw"].shutdown()
     __env["proc"].terminate()
     __env.clear()
+    biolqm._japi_stop()
 
 def restart():
     stop()
