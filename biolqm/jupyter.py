@@ -7,7 +7,7 @@ if IN_IPYTHON:
         if e is None:
             e = f
         return {"name": "{} (.{})".format(d, e),
-            "snippet": ['biolqm.saveModel(lqm, "mymodel.{}", "{}")'.format(e, f)]}
+            "snippet": ['biolqm.save(lqm, "mymodel.{}", "{}")'.format(e, f)]}
 
     menu = [
         {"name": "Upload model",
@@ -41,6 +41,29 @@ if IN_IPYTHON:
             {"name": "Pint", "snippet": [
                 'an = biolqm.to_pint(lqm)']},
             ]},
+    "---",
+    {"name": "Compute fixpoints",
+    #{"name": "Compute fixpoints (MDD method)",
+        "snippet": ["fps = biolqm.fixpoints(lqm)"]},
+    #{"name": "Compute fixpoints (ASP method)",
+    #    "snippet": ["fps = biolqm.fixpoints(lqm, 'asp')"]},
+    {"name": "Compute trap spaces",
+        "snippet": ["traps = biolqm.trapspace(lqm)"]},
+    "---",
+    {"name":"Model modifications",
+        "sub-menu": [
+            {"name": "Perturbation",
+                "snippet": ["lqm_mod = biolqm.perturbation(lqm, \"node%0\")"]},
+            {"name": "Booleanization",
+                "snippet": ["lqm_bool = biolqm.booleanize(lqm)"]},
+            {"name": "Reduction",
+                "snippet": ["lqm_red = biolqm.reduce(lqm, \"fixed,output,duplicate\")"]},
+            {"name": "Reversal",
+                "snippet": ["lqm_rev = biolqm.reverse(lqm)"]},
+        ]},
+     "---",
+     {"name": "Documentation",
+        "external-link": "http://ginsim.naldi.info/biolqm/site/doc/index.html"}
     ]
     jupyter_setup("biolqm",
         label="bioLQM",
