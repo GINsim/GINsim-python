@@ -16,7 +16,7 @@ if IN_IPYTHON:
         {"name":"Convert to tool",
             "sub-menu": [
             {"name": "bioLQM",
-                "snippet":['lqm = ginsim.to_biolqm()']},
+                "snippet":['lqm = ginsim.to_biolqm(lrg)']},
             {"name": "MaBoSS",
                 "snippet":['masim = ginsim.to_maboss(lrg)']},
             {"name": "NuSMV",
