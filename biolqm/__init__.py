@@ -11,15 +11,23 @@ from ginsim.gateway import japi, restart
 
 _japi_wrappers = set()
 
+_japi_converters = {}
+
+
 class LQMTool:
     def __init__(self, tool):
+        self.uid = tool.getID()
         self.tool = tool
     
     def setup(self, model, parameters=''):
         return self.tool.getSettings(model, parameters)
     
     def get(self, settings):
-        return self.tool.getResult(settings)
+        result = self.tool.getResult(settings)
+        if self.uid in _japi_converters:
+            return _japi_converters[self.uid](result)
+        
+        return result
     
     def __call__(self, model, parameters=''):
         settings = self.setup(model, parameters)
