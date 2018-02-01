@@ -7,6 +7,8 @@ from colomoto_jupyter import *
 from colomoto_jupyter.sessionfiles import new_output_file
 from colomoto_jupyter.io import ensure_localfile
 
+from colomoto import ModelState
+
 from .jupyter import upload
 from .gateway import japi, restart
 
@@ -20,6 +22,8 @@ def service(name):
 if IN_IPYTHON:
     def show(lrg, state=None):
         if state:
+            if isinstance(state, dict):
+                state = get_ginsim_state(lrg, state)
             data = japi.gs.service("image").rawPNG(lrg, state)
         else:
             data = japi.gs.service("image").rawPNG(lrg)
@@ -53,6 +57,30 @@ def nusmv_var_state(ai):
     if len(a) == 1 or a.lower() in __nusmvReserved:
         a = "_%s" % a
     return "%s=%s" % (a,i)
+
+def get_ginsim_state(lrg, state):
+    order = lrg.getNodeOrder()
+    l = len(order)
+    gw = japi.java
+    int_class = gw.jvm.int
+    int_array = gw.new_array(int_class, l)
+    i = 0
+    for node in order:
+        uid = node.getId()
+        if uid in state:
+            int_array[i] = state[uid]
+        i += 1
+    
+    return int_array
+
+def get_model_state(lrg, state):
+    mstate = ModelState()
+    order = lrg.getNodeOrder()
+    l = len(order)
+    for i in range(l):
+        mstate[ order[i].getId() ] = state[i]
+    
+    return mstate
 
 def to_nusmv(lrg, update_mode="async"):
     assert update_mode in ["async", "sync", "complete"], "Unknown update mode"
