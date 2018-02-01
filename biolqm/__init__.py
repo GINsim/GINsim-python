@@ -7,11 +7,10 @@ from colomoto_jupyter import import_colomoto_tool
 
 from .jupyter import upload
 
-from ginsim.gateway import japi, restart
-
 _japi_wrappers = set()
-
 _japi_converters = {}
+
+from ginsim.gateway import japi, restart
 
 
 class LQMTool:
