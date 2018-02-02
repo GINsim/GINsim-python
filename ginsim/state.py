@@ -32,18 +32,3 @@ def get_model_state(nodes, state):
     
     return mstate
 
-
-def convert_fixpoints(stables):
-    if stables == None or len(stables) < 1:
-        return []
-    return [ get_model_state(stables.nodes, state) for state in stables ]
-
-def convert_trapspace(traps):
-    if traps == None or len(traps) < 1:
-        return []
-    return [ get_model_state(traps.nodes, state.pattern) for state in traps ]
-
-biolqm._japi_converters['fixpoints'] = convert_fixpoints
-biolqm._japi_converters['stable'] = convert_fixpoints
-biolqm._japi_converters['trapspace'] = convert_trapspace
-

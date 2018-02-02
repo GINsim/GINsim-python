@@ -7,10 +7,9 @@ from colomoto_jupyter import import_colomoto_tool
 
 from .jupyter import upload
 
-_japi_wrappers = set()
-_japi_converters = {}
 
 from ginsim.gateway import japi, restart
+from ginsim.state import *
 
 
 class LQMTool:
@@ -44,6 +43,23 @@ class LQMModifier:
     
     def __getattr__(self, name):
         return self.modifier.__getattr__(name)
+
+
+def convert_fixpoints(stables):
+    if stables == None or len(stables) < 1:
+        return []
+    return [ get_model_state(stables.nodes, state) for state in stables ]
+
+def convert_trapspace(traps):
+    if traps == None or len(traps) < 1:
+        return []
+    return [ get_model_state(traps.nodes, state.pattern) for state in traps ]
+
+_japi_wrappers = set()
+_japi_converters = {
+    "fixpoints": convert_fixpoints,
+    "trapspace": convert_trapspace,
+}
 
 def _japi_start():
     current_module = __import__(__name__)
