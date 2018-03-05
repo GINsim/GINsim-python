@@ -65,10 +65,25 @@ if IN_IPYTHON:
      {"name": "Documentation",
         "external-link": "http://ginsim.naldi.info/biolqm/site/doc/index.html"}
     ]
+    toolbar = [
+        {"name": "upload", "setup": {
+            "icon": "fa-upload",
+            "help": "Upload model",
+            "handler": "action_upload_model"}},
+    ]
+    js_api = {
+    "action_upload_model": """function() {
+        var cell = Jupyter.notebook.get_selected_cell();
+        cell.set_text('lqm = '+biolqm_jsapi.module_alias+'.upload()');
+        cell.focus_editor();
+    }""",
+    }
     jupyter_setup("biolqm",
         label="bioLQM",
         color="#00007f", # for menu and toolbar
-        menu=menu)
+        menu=menu,
+        toolbar=toolbar,
+        js_api=js_api)
 
 
     from colomoto_jupyter.upload import jupyter_upload
