@@ -101,6 +101,17 @@ def getModifier(name):
 def getTool(name):
     return japi.lqm.getTool(name)
 
+def to_ginsim(model):
+    """
+    Convert a bioLQM model into an equivalent GINsim model using the
+    :py:mod:`ginsim` Python module.
+    Please note that no layout is set for the regulatory graph.
+    """
+    import_colomoto_tool("ginsim")
+    ginml_file = new_output_file("ginml")
+    assert saveModel(model, ginml_file, "ginml")
+    return ginsim.load(ginml_file)
+
 def to_maboss(model):
     import_colomoto_tool("maboss")
     maboss_file = new_output_file("bnd")

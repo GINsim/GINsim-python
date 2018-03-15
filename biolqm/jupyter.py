@@ -36,6 +36,8 @@ if IN_IPYTHON:
             ]},
         {"name":"Convert to tool",
             "sub-menu": [
+            {"name": "GINsim", "snippet": [
+                'lrg = biolqm.to_ginsim(lqm)']},
             {"name": "MaBoSS", "snippet": [
                 'masim = biolqm.to_maboss(lqm)']},
             {"name": "Pint", "snippet": [
