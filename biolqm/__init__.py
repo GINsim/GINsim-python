@@ -55,10 +55,34 @@ def convert_trapspace(traps):
         return []
     return [ get_model_state(traps.nodes, state.pattern) for state in traps ]
 
+
+class SimulationIterable:
+    def __init__(self, simulation):
+        self.simulation = simulation
+    
+    def __iter__(self):
+        return SimulationIterator(self.simulation)
+
+class SimulationIterator:
+    def __init__(self, simulation):
+        self.iterator = simulation.iterator()
+        self.nodes = simulation.getNodes()
+    
+    def __next__(self):
+        if self.iterator.hasNext():
+            return get_model_state(self.nodes, self.iterator.next())
+        raise StopIteration()
+
+def convert_trace(simulation):
+    if simulation == None:
+        return []
+    return SimulationIterable(simulation)
+
 _japi_wrappers = set()
 _japi_converters = {
     "fixpoints": convert_fixpoints,
     "trapspace": convert_trapspace,
+    "trace": convert_trace,
 }
 
 def _japi_start():
