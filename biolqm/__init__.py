@@ -83,6 +83,7 @@ _japi_converters = {
     "fixpoints": convert_fixpoints,
     "trapspace": convert_trapspace,
     "trace": convert_trace,
+    "random": convert_trace,
 }
 
 def _japi_start():
