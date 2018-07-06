@@ -152,6 +152,19 @@ def to_pint(model, simplify=True):
         an = an.simplify()
     return an
 
+def to_minibn(model):
+    from colomoto import minibn
+    if model.isBoolean():
+        fmt = "bnet"
+        cls = minibn.BooleanNetwork
+    else:
+        fmt = "mnet"
+        cls = minibn.MultiValuedNetwork
+    bnfile = new_output_file(fmt)
+    assert saveModel(model, bnfile, fmt)
+    with open(bnfile) as data:
+        return cls(data)
+
 from ginsim.gateway import register
 register(sys.modules[__name__])
 del(register)
