@@ -1,11 +1,12 @@
 {% set name = "ginsim-python" %}
-{% set version = "0.3.0" %}
+{% set version = "0.3.1" %}
 package:
   name: '{{ name|lower }}'
   version: '{{ version }}'
 
 source:
-  url: https://github.com/GINsim/GINsim-python/archive/v{{ version }}.tar.gz
+  git_rev: v{{ version }}
+  git_url: https://github.com/.GINsim/GINsim-python.git
 
 channels:
   - colomoto
