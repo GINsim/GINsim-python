@@ -18,18 +18,18 @@ class LQMTool:
         self.tool = tool
     
     def setup(self, model, parameters=''):
-        return self.tool.getSettings(model, parameters)
+        return self.tool.getTask(model, parameters)
     
-    def get(self, settings):
-        result = self.tool.getResult(settings)
+    def get(self, task):
+        result = task.call()
         if self.uid in _japi_converters:
             return _japi_converters[self.uid](result)
         
         return result
     
     def __call__(self, model, parameters=''):
-        settings = self.setup(model, parameters)
-        return self.get(settings)
+        task = self.setup(model, parameters)
+        return self.get(task)
     
     def __getattr__(self, name):
         return self.tool.__getattr__(name)
@@ -48,7 +48,7 @@ class LQMModifier:
 def convert_fixpoints(stables):
     if stables == None or len(stables) < 1:
         return []
-    return [ get_model_state(stables.nodes, state) for state in stables ]
+    return [ get_model_state(stables.getComponents(), state) for state in stables ]
 
 def convert_trapspace(traps):
     if traps == None or len(traps) < 1:
@@ -89,13 +89,13 @@ _japi_converters = {
 def _japi_start():
     current_module = __import__(__name__)
     
-    for tool in japi.java.jvm.org.colomoto.biolqm.LQMServiceManager.getTools():
+    for tool in japi.java.jvm.org.colomoto.biolqm.service.LQMServiceManager.getTools():
         name = tool.getID()
         wrapper = LQMTool(tool)
         setattr(current_module, name, wrapper)
         _japi_wrappers.add(name)
 
-    for mod in japi.java.jvm.org.colomoto.biolqm.LQMServiceManager.getModifiers():
+    for mod in japi.java.jvm.org.colomoto.biolqm.service.LQMServiceManager.getModifiers():
         name = mod.getID()
         wrapper = LQMModifier(mod)
         setattr(current_module, name, wrapper)
@@ -109,13 +109,13 @@ def _japi_stop():
 
 def load(filename, *args):
     filename = ensure_localfile(filename)
-    return japi.lqm.loadModel(filename, *args)
+    return japi.lqm.load(filename, *args)
 
-def saveModel(model, filename, format=None):
-    return japi.lqm.saveModel(model, filename, format)
+def save(model, filename, format=None):
+    return japi.lqm.save(model, filename, format)
 
-def modifyModel(model, modifier, *args):
-    return japi.lqm.modifyModel(model, modifier, *args)
+def modify(model, modifier, *args):
+    return japi.lqm.modify(model, modifier, *args)
 
 def getFormat(name):
     return japi.lqm.getFormat(name)
@@ -134,18 +134,18 @@ def to_ginsim(model):
     """
     import_colomoto_tool("ginsim")
     ginml_file = new_output_file("ginml")
-    assert saveModel(model, ginml_file, "ginml")
+    assert save(model, ginml_file, "ginml")
     return ginsim.load(ginml_file)
 
 def to_maboss(model):
     import_colomoto_tool("maboss")
     maboss_file = new_output_file("bnd")
-    assert saveModel(model, maboss_file, "bnd")
+    assert save(model, maboss_file, "bnd")
     return maboss.load(maboss_file, "%s.cfg" % maboss_file)
 
-def to_pint(model, simplify=True):
+def to_pint(model, simplify=False):
     anfile = new_output_file("an")
-    assert saveModel(model, anfile, "an")
+    assert save(model, anfile, "an")
     import_colomoto_tool("pypint")
     an = pypint.load(anfile)
     if simplify:
@@ -161,7 +161,7 @@ def to_minibn(model):
         fmt = "mnet"
         cls = minibn.MultiValuedNetwork
     bnfile = new_output_file(fmt)
-    assert saveModel(model, bnfile, fmt)
+    assert save(model, bnfile, fmt)
     with open(bnfile) as data:
         return cls(data)
 

@@ -6,10 +6,11 @@ package:
 
 source:
   git_rev: v{{ version }}
-  git_url: https://github.com/.GINsim/GINsim-python.git
+  git_url: https://github.com/GINsim/GINsim-python.git
 
 channels:
   - colomoto
+  - potassco
 
 build:
   number: 0
