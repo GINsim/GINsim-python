@@ -14,35 +14,58 @@ from ginsim.state import *
 
 class LQMTool:
     def __init__(self, tool):
-        self.uid = tool.getID()
-        self.tool = tool
-    
-    def setup(self, model, parameters=''):
-        return self.tool.getTask(model, parameters)
-    
-    def get(self, task):
-        result = task.call()
-        if self.uid in _japi_converters:
-            return _japi_converters[self.uid](result)
+        self._uid = tool.getID()
+        self._tool = tool
+
+    def getTask(self, model, parameters=None):
+        if parameters:
+            task = self._tool.getTask(model, parameters)
+        else:
+            task = self._tool.getTask(model)
+        
+        if self._uid in _japi_converters:
+            return LQMTask(task, _japi_converters[self._uid])
+        
+        return LQMTask(task)
+
+    def __call__(self, model, parameters=None):
+        return self.getTask(model, parameters)()
+
+    def __getattr__(self, name):
+        return self._tool.__getattr__(name)
+
+class LQMTask:
+    def __init__(self, task, convert=None):
+        self._task = task
+        self._convert = convert
+
+    def __call__(self):
+        result = self._task.call()
+        
+        if self._convert:
+            return self._convert(result)
         
         return result
-    
-    def __call__(self, model, parameters=''):
-        task = self.setup(model, parameters)
-        return self.get(task)
-    
+
     def __getattr__(self, name):
-        return self.tool.__getattr__(name)
+        return self._task.__getattr__(name)
 
 class LQMModifier:
     def __init__(self, modifier):
-        self.modifier = modifier
-    
+        self._modifier = modifier
+
+    def getModifier(self, model, parameters=None):
+        if parameters:
+            mod = self._modifier.getModifier(model, parameters)
+        else:
+            mod = self._modifier.getModifier(model)
+        return mod
+
     def __call__(self, model, parameters=None):
-        return self.modifier.getModifiedModel(model, parameters)
+        return self.getModifier(model, parameters).getModifiedModel()
     
     def __getattr__(self, name):
-        return self.modifier.__getattr__(name)
+        return self._modifier.__getattr__(name)
 
 
 def convert_fixpoints(stables):
