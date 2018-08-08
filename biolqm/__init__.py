@@ -7,6 +7,8 @@ from colomoto_jupyter import import_colomoto_tool
 
 from .jupyter import upload
 
+import pandas as pd
+import numpy as np
 
 from ginsim.gateway import japi, restart
 from ginsim.state import *
@@ -66,6 +68,18 @@ class LQMModifier:
     
     def __getattr__(self, name):
         return self._modifier.__getattr__(name)
+
+
+def convert_states(states):
+    if states == None or len(states) < 1:
+        return []
+    
+    ids = [str(n) for n in states.getComponents()]
+    data = [ np.frombuffer(r, dtype=np.byte) for r in states ]
+    data = np.concatenate(data)
+    data = data.reshape( (states.size(), len(ids)) )
+    ids = [n.getNodeID() for n in states.getComponents()]
+    return pd.DataFrame(data, columns=ids)
 
 
 def convert_fixpoints(stables):

@@ -12,6 +12,8 @@ from colomoto import ModelState
 from .jupyter import upload
 from .gateway import japi, restart
 
+import pandas as pd
+
 import ginsim.state
 
 def load(filename, *args):
@@ -23,9 +25,14 @@ def service(name):
 
 if IN_IPYTHON:
     def show(lrg, state=None):
-        if state:
+        if state is not None:
             if isinstance(state, dict):
                 state = ginsim.state.get_ginsim_state(lrg, state)
+            elif isinstance(state, pd.Series):
+                # FIXME: here we assume that the Series is using the proper order
+                # Fixing the index could be done with:
+                # state = state.reindex( ["Proper", "Node", "Order"], fill_value=-1 )
+                state = state.values.tobytes()
             data = japi.gs.service("image").rawPNG(lrg, state)
         else:
             data = japi.gs.service("image").rawPNG(lrg)
