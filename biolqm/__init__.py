@@ -64,7 +64,7 @@ class LQMModifier:
         return mod
 
     def __call__(self, model, parameters=None):
-        return self.getModifier(model, parameters).getModifiedModel()
+        return self.getModifier(model, parameters).call()
     
     def __getattr__(self, name):
         return self._modifier.__getattr__(name)

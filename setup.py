@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 NAME = 'ginsim'
 
 setup(name=NAME,
-    version='0.3.2',
+    version='0.3.3',
     author = "Aurélien Naldi",
     author_email = "aurelien.naldi@gmail.com",
     url = "https://github.com/GINsim/GINsim-python",
