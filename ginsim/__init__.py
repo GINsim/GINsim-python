@@ -47,6 +47,13 @@ def to_maboss(lrg):
 def to_pint(lrg, simplify=True):
     return biolqm.to_pint(lrg.getModel(), simplify)
 
+def to_sbmlqual(lrg, filename):
+    japi.gs.service("SBML").export(lrg, filename)
+
+def load_sbmlqual(filename):
+    return japi.gs.service("SBML").importLRG(filename)
+
+
 __nusmvReserved = [ "MODULE", "DEFINE", "MDEFINE",
     "CONSTANTS", "VAR", "IVAR", "FROZENVAR", "INIT", "TRANS", "INVAR",
     "SPEC", "CTLSPEC", "LTLSPEC", "PSLSPEC", "COMPUTE", "NAME",
