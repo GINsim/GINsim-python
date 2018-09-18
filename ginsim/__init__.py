@@ -1,6 +1,8 @@
 
 import sys
 
+import colomoto.setup_helper
+
 import biolqm
 
 from colomoto_jupyter import *
