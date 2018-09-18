@@ -169,13 +169,13 @@ def to_ginsim(model):
     :py:mod:`ginsim` Python module.
     Please note that no layout is set for the regulatory graph.
     """
-    import_colomoto_tool("ginsim")
+    ginsim = import_colomoto_tool("ginsim")
     ginml_file = new_output_file("ginml")
     assert save(model, ginml_file, "ginml")
     return ginsim.load(ginml_file)
 
 def to_maboss(model):
-    import_colomoto_tool("maboss")
+    maboss = import_colomoto_tool("maboss")
     maboss_file = new_output_file("bnd")
     assert save(model, maboss_file, "bnd")
     return maboss.load(maboss_file, "%s.cfg" % maboss_file)
@@ -183,7 +183,7 @@ def to_maboss(model):
 def to_pint(model, simplify=False):
     anfile = new_output_file("an")
     assert save(model, anfile, "an")
-    import_colomoto_tool("pypint")
+    pypint = import_colomoto_tool("pypint")
     an = pypint.load(anfile)
     if simplify:
         an = an.simplify()
