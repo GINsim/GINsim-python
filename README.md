@@ -9,7 +9,7 @@ Python gateway and integration into the Jupyter notebook for GINsim and bioLQM
 ### With conda
 
 ```
-conda install -u colomoto ginsim-python
+conda install -c colomoto ginsim-python
 ```
 
 ### With pip
