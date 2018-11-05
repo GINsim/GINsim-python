@@ -53,6 +53,8 @@ def to_sbmlqual(lrg, filename):
 def load_sbmlqual(filename):
     return japi.gs.service("SBML").importLRG(filename)
 
+def layout(lrg, ref):
+    return japi.gs.service("layout").runLayout(ref, lrg)
 
 __nusmvReserved = [ "MODULE", "DEFINE", "MDEFINE",
     "CONSTANTS", "VAR", "IVAR", "FROZENVAR", "INIT", "TRANS", "INVAR",
