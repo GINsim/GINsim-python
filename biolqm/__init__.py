@@ -30,8 +30,8 @@ class LQMTool:
         
         return LQMTask(task)
 
-    def __call__(self, model, parameters=None):
-        return self.getTask(model, parameters)()
+    def __call__(self, model, parameters=None, autoconvert=True):
+        return self.getTask(model, parameters)(autoconvert)
 
     def __getattr__(self, name):
         return self._tool.__getattr__(name)
@@ -41,10 +41,10 @@ class LQMTask:
         self._task = task
         self._convert = convert
 
-    def __call__(self):
+    def __call__(self, autoconvert=True):
         result = self._task.call()
         
-        if self._convert:
+        if autoconvert and self._convert:
             return self._convert(result)
         
         return result
@@ -70,7 +70,7 @@ class LQMModifier:
         return self._modifier.__getattr__(name)
 
 
-def convert_states(states):
+def states_to_dataframe(states):
     if states == None or len(states) < 1:
         return []
     
