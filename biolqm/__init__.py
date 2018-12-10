@@ -75,7 +75,7 @@ def states_to_dataframe(states):
         return []
     
     ids = [str(n) for n in states.getComponents()]
-    data = [ np.frombuffer(r, dtype=np.byte) for r in states ]
+    data = [ np.frombuffer(states.fillState(None,idx), dtype=np.byte) for idx in range(len(states)) ]
     data = np.concatenate(data)
     data = data.reshape( (states.size(), len(ids)) )
     ids = [n.getNodeID() for n in states.getComponents()]
@@ -118,7 +118,7 @@ def convert_trace(simulation):
 _japi_wrappers = set()
 _japi_converters = {
     "fixpoints": convert_fixpoints,
-    "trapspace": convert_trapspace,
+    "trapspaces": convert_trapspace,
     "trace": convert_trace,
     "random": convert_trace,
 }
@@ -131,6 +131,10 @@ def _japi_start():
         wrapper = LQMTool(tool)
         setattr(current_module, name, wrapper)
         _japi_wrappers.add(name)
+        aliases = tool.getAliases()
+        if aliases:
+            for alias in aliases:
+                setattr(current_module, alias, wrapper)
 
     for mod in japi.java.jvm.org.colomoto.biolqm.service.LQMServiceManager.getModifiers():
         name = mod.getID()
