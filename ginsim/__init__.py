@@ -23,20 +23,23 @@ def load(filename, *args):
 def service(name):
     return japi.gs.service(name)
 
+def get_image(lrg, state=None):
+    if state is not None:
+        if isinstance(state, dict):
+            state = ginsim.state.get_ginsim_state(lrg, state)
+        elif isinstance(state, pd.Series):
+            # FIXME: here we assume that the Series is using the proper order
+            # Fixing the index could be done with:
+            # state = state.reindex( ["Proper", "Node", "Order"], fill_value=-1 )
+            state = state.values.tobytes()
+        data = japi.gs.service("image").rawPNG(lrg, state)
+    else:
+        data = japi.gs.service("image").rawPNG(lrg)
+    return data
+
 if IN_IPYTHON:
     def show(lrg, state=None):
-        if state is not None:
-            if isinstance(state, dict):
-                state = ginsim.state.get_ginsim_state(lrg, state)
-            elif isinstance(state, pd.Series):
-                # FIXME: here we assume that the Series is using the proper order
-                # Fixing the index could be done with:
-                # state = state.reindex( ["Proper", "Node", "Order"], fill_value=-1 )
-                state = state.values.tobytes()
-            data = japi.gs.service("image").rawPNG(lrg, state)
-        else:
-            data = japi.gs.service("image").rawPNG(lrg)
-        return show_image(data)
+        return show_image(get_image(lrg, state))
 
 def to_biolqm(lrg):
     return lrg.getModel()
