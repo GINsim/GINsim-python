@@ -7,7 +7,7 @@ if IN_IPYTHON:
         if e is None:
             e = f
         return {"name": "{} (.{})".format(d, e),
-            "snippet": ['biolqm.saveModel(lqm, "mymodel.{}", "{}")'.format(e, f)]}
+            "snippet": ['biolqm.save(lqm, "mymodel.{}", "{}")'.format(e, f)]}
 
     menu = [
         {"name": "Upload model",
