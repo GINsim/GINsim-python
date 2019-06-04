@@ -150,7 +150,9 @@ def _japi_stop():
 
 def load(filename, *args):
     filename = ensure_localfile(filename)
-    return japi.lqm.load(filename, *args)
+    obj = japi.lqm.load(filename, *args)
+    assert obj is not None, "Error while loading model"
+    return obj
 
 def save(model, filename, format=None):
     assert japi.lqm.save(model, filename, format)

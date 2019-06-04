@@ -18,7 +18,9 @@ import ginsim.state
 
 def load(filename, *args):
     filename = ensure_localfile(filename)
-    return japi.gs.load(filename, *args)
+    obj = japi.gs.load(filename, *args)
+    assert obj is not None, "Error while loading model"
+    return obj
 
 def service(name):
     return japi.gs.service(name)
