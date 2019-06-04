@@ -153,7 +153,8 @@ def load(filename, *args):
     return japi.lqm.load(filename, *args)
 
 def save(model, filename, format=None):
-    return japi.lqm.save(model, filename, format)
+    assert japi.lqm.save(model, filename, format)
+    return filename
 
 def modify(model, modifier, *args):
     return japi.lqm.modify(model, modifier, *args)
