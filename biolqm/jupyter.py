@@ -62,6 +62,8 @@ if IN_IPYTHON:
                 "snippet": ["lqm_red = biolqm.reduce(lqm, \"fixed,output,duplicate\")"]},
             {"name": "Reversal",
                 "snippet": ["lqm_rev = biolqm.reverse(lqm)"]},
+            {"name": "Sanitize",
+                "snippet": ["lqm_san = biolqm.sanitize(lqm)"]},
         ]},
      "---",
      {"name": "Documentation",
