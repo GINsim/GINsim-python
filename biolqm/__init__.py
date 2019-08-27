@@ -13,6 +13,7 @@ import numpy as np
 from ginsim.gateway import japi, restart
 from ginsim.state import *
 
+from py4j.java_gateway import JavaObject
 
 class LQMTool:
     def __init__(self, tool):
@@ -169,6 +170,13 @@ def getModifier(name):
 
 def getTool(name):
     return japi.lqm.getTool(name)
+
+def is_biolqm_object(obj):
+    """
+    Returns true if argument is a bioLQM object
+    """
+    return isinstance(obj, JavaObject) \
+        and obj.getClass().getPackage().getName() == "org.colomoto.biolqm"
 
 def to_ginsim(model):
     """
