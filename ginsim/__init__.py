@@ -39,6 +39,13 @@ def get_image(lrg, state=None):
         data = japi.gs.service("image").rawPNG(lrg)
     return data
 
+def is_ginsim_object(obj):
+    """
+    Returns true if argument is a GINsim object
+    """
+    return isinstance(obj, JavaObject) \
+        and obj.getClass().getPackage().getName() == "org.ginsim.core.graph.regulatorygraph"
+
 if IN_IPYTHON:
     def show(lrg, state=None):
         return show_image(get_image(lrg, state))
