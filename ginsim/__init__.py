@@ -25,7 +25,10 @@ def load(filename, *args):
 def service(name):
     return japi.gs.service(name)
 
-def get_image(lrg, state=None):
+def get_image(lrg, state=None, style=None):
+    if style is not None:
+        return japi.gs.service("image").rawPNG(lrg, style)
+
     if state is not None:
         if isinstance(state, dict):
             state = ginsim.state.get_ginsim_state(lrg, state)
@@ -34,10 +37,12 @@ def get_image(lrg, state=None):
             # Fixing the index could be done with:
             # state = state.reindex( ["Proper", "Node", "Order"], fill_value=-1 )
             state = state.values.tobytes()
-        data = japi.gs.service("image").rawPNG(lrg, state)
-    else:
-        data = japi.gs.service("image").rawPNG(lrg)
-    return data
+        return japi.gs.service("image").rawPNG(lrg, state)
+
+    return japi.gs.service("image").rawPNG(lrg)
+
+def lrg_style(lrg):
+    return japi.gs.service("image").customStyleProvider(lrg)
 
 def is_ginsim_object(obj):
     """
@@ -47,8 +52,8 @@ def is_ginsim_object(obj):
         and obj.getClass().getPackage().getName() == "org.ginsim.core.graph.regulatorygraph"
 
 if IN_IPYTHON:
-    def show(lrg, state=None):
-        return show_image(get_image(lrg, state))
+    def show(lrg, state=None, style=None):
+        return show_image(get_image(lrg, state, style))
 
 def to_biolqm(lrg):
     return lrg.getModel()
