@@ -218,11 +218,13 @@ def autolayout(model, method="dot"):
     layout = layout_graph(ig, method=method)
     add_layout(model, layout)
 
-def to_ginsim(model):
+def to_ginsim(model, ensure_layout=True, layout_method="dot"):
     """
     Convert a bioLQM model into an equivalent GINsim model using the
     :py:mod:`ginsim` Python module.
     """
+    if ensure_layout and not model.hasLayout():
+        autolayout(model, method=layout_method)
     return japi.gs.load(model)
 
 def to_maboss(model):
