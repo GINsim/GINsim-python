@@ -178,6 +178,46 @@ def is_biolqm_object(obj):
     return isinstance(obj, JavaObject) \
         and obj.getClass().getPackage().getName() == "org.colomoto.biolqm"
 
+def influence_graph(model):
+    import networkx
+    matrix = japi.java.jvm.org.colomoto.biolqm.ConnectivityMatrix(model)
+    cnodes = model.getComponents()
+    enodes = model.getExtraComponents()
+    edges = []
+    for (nodes, extra) in [(cnodes, False), (enodes, True)]:
+        for idx in range(len(nodes)):
+            a  = nodes.get(idx).getNodeID()
+            regulators = matrix.getRegulators(idx, extra)
+            if not regulators:
+                continue
+            effects = matrix.getRegulatorEffects(idx, extra)
+            for i in range(len(regulators)):
+                reg = regulators[i]
+                b = nodes.get(reg).getNodeID()
+                curEffects = effects[i]
+                for v in range(len(curEffects)):
+                    e = curEffects[v]
+                    if e == e.NONE:
+                        continue
+                    elif e == e.POSITIVE:
+                        sign = 1
+                    elif e == e.NEGATIVE:
+                        sign = -1
+                    else:
+                        sign = 0
+                    edges.append((b,sign,a))
+    ig = networkx.MultiDiGraph()
+    labels = {1: "+", -1: "-", 0: "?"}
+    for (b, sign, a) in edges:
+        ig.add_edge(b, a, sign=sign, label=labels[sign])
+    return ig
+
+def autolayout(model, method="dot"):
+    from colomoto.helpers import layout_graph
+    ig = influence_graph(model)
+    layout = layout_graph(ig, method=method)
+    add_layout(model, layout)
+
 def to_ginsim(model):
     """
     Convert a bioLQM model into an equivalent GINsim model using the
