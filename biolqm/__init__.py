@@ -182,12 +182,8 @@ def to_ginsim(model):
     """
     Convert a bioLQM model into an equivalent GINsim model using the
     :py:mod:`ginsim` Python module.
-    Please note that no layout is set for the regulatory graph.
     """
-    ginsim = import_colomoto_tool("ginsim")
-    ginml_file = new_output_file("ginml")
-    assert save(model, ginml_file, "ginml")
-    return ginsim.load(ginml_file)
+    return japi.gs.load(model)
 
 def to_maboss(model):
     maboss = import_colomoto_tool("maboss")
@@ -216,6 +212,22 @@ def to_minibn(model):
     assert save(model, bnfile, fmt)
     with open(bnfile) as data:
         return cls(data)
+
+
+def add_layout(model, layout):
+    """
+    Add layout information to a model
+    The layout object should be a dict of dicts in which the 'nodes' entry is
+    a dict giving the (x, y) position of all nodes, identified by their uid.
+    """
+    inner = model.getLayout()
+    for uid, values in layout['nodes'].items():
+        ni = model.getComponent(uid)
+        if ni:
+            inner.setPosition(ni, int(values['x']), int(values['y']))
+        else:
+            print("no such node: ", uid)
+
 
 from ginsim.gateway import register
 register(sys.modules[__name__])
