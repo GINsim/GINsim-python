@@ -212,19 +212,30 @@ def influence_graph(model):
         ig.add_edge(b, a, sign=sign, label=labels[sign])
     return ig
 
-def autolayout(model, method="dot"):
+default_layout = "patchwork"
+
+def autolayout(model, method=default_layout, scale="auto"):
     from colomoto.helpers import layout_graph
+    if scale == "auto":
+        default = 1
+        scales = {
+            "dot": 0.25,
+            "circo": 0.4,
+            "neato": 0.5,
+        }
+        scale = scales.get(method, default)
     ig = influence_graph(model)
-    layout = layout_graph(ig, method=method)
+    layout = layout_graph(ig, method=method, scale=scale*200)
     add_layout(model, layout)
 
-def to_ginsim(model, ensure_layout=True, layout_method="dot"):
+def to_ginsim(model, ensure_layout=True,
+        layout_method=default_layout, layout_scale="auto"):
     """
     Convert a bioLQM model into an equivalent GINsim model using the
     :py:mod:`ginsim` Python module.
     """
     if ensure_layout and not model.hasLayout():
-        autolayout(model, method=layout_method)
+        autolayout(model, method=layout_method, scale=layout_scale)
     return japi.gs.load(model)
 
 def to_maboss(model):
