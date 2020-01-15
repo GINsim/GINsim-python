@@ -212,7 +212,7 @@ def influence_graph(model):
         ig.add_edge(b, a, sign=sign, label=labels[sign])
     return ig
 
-default_layout = "patchwork"
+default_layout = "neato"
 
 def autolayout(model, method=default_layout, scale="auto"):
     from colomoto.helpers import layout_graph
@@ -221,7 +221,7 @@ def autolayout(model, method=default_layout, scale="auto"):
         scales = {
             "dot": 0.25,
             "circo": 0.4,
-            "neato": 0.5,
+            "neato": 0.55,
         }
         scale = scales.get(method, default)
     ig = influence_graph(model)
