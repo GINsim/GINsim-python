@@ -244,7 +244,7 @@ def to_maboss(model):
     assert save(model, maboss_file, "bnd")
     return maboss.load(maboss_file, "%s.cfg" % maboss_file)
 
-def to_pint(model, simplify=False):
+def to_pint(model, simplify=True):
     anfile = new_output_file("an")
     assert save(model, anfile, "an")
     pypint = import_colomoto_tool("pypint")
@@ -253,7 +253,7 @@ def to_pint(model, simplify=False):
         an = an.simplify()
     return an
 
-def to_minibn(model):
+def to_minibn(model, simplify=True):
     from colomoto import minibn
     if model.isBoolean():
         fmt = "bnet"
@@ -264,7 +264,10 @@ def to_minibn(model):
     bnfile = new_output_file(fmt)
     assert save(model, bnfile, fmt)
     with open(bnfile) as data:
-        return cls(data)
+        bn = cls(data)
+    if simplify and hasattr(bn, "simplify"):
+        bn = bn.simplify()
+    return bn
 
 
 def add_layout(model, layout):

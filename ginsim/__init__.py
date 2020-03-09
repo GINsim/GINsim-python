@@ -64,6 +64,9 @@ def to_maboss(lrg):
 def to_pint(lrg, simplify=True):
     return biolqm.to_pint(lrg.getModel(), simplify)
 
+def to_minibn(lrg, simplify=True):
+    return biolqm.to_minibn(lrg.getModel(), simplify)
+
 __nusmvReserved = [ "MODULE", "DEFINE", "MDEFINE",
     "CONSTANTS", "VAR", "IVAR", "FROZENVAR", "INIT", "TRANS", "INVAR",
     "SPEC", "CTLSPEC", "LTLSPEC", "PSLSPEC", "COMPUTE", "NAME",
