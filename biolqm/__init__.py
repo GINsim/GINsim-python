@@ -253,8 +253,10 @@ def to_pint(model, simplify=True):
         an = an.simplify()
     return an
 
-def to_minibn(model, simplify=True):
+def to_minibn(model, simplify=True, ensure_boolean=False):
     from colomoto import minibn
+    if ensure_boolean and not model.isBoolean():
+        model = booleanize(model)
     if model.isBoolean():
         fmt = "bnet"
         cls = minibn.BooleanNetwork
