@@ -16,6 +16,8 @@ import pandas as pd
 
 import ginsim.state
 
+from py4j.java_gateway import JavaObject
+
 def load(filename, *args):
     filename = ensure_localfile(filename)
     obj = japi.gs.load(filename, *args)
