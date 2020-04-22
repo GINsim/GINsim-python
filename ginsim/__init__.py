@@ -27,6 +27,11 @@ def load(filename, *args):
 def service(name):
     return japi.gs.service(name)
 
+def get_svg(lrg, style=None):
+    if style is not None:
+        return japi.gs.service("image").getSVG(lrg, style)
+    return japi.gs.service("image").getSVG(lrg)
+
 def get_image(lrg, state=None, style=None):
     if style is not None:
         return japi.gs.service("image").rawPNG(lrg, style)
@@ -56,6 +61,10 @@ def is_ginsim_object(obj):
 if IN_IPYTHON:
     def show(lrg, state=None, style=None):
         return show_image(get_image(lrg, state, style))
+
+    from IPython.display import SVG
+    def show_svg(lrg, style=None):
+        return SVG( get_svg(lrg, style) )
 
 def to_biolqm(lrg):
     return lrg.getModel()
