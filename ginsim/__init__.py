@@ -13,6 +13,7 @@ from .jupyter import upload
 from .gateway import japi, restart
 
 import pandas as pd
+import numpy as np
 
 import ginsim.state
 
@@ -30,17 +31,16 @@ def load(filename, *args):
 def service(name):
     return japi.gs.service(name)
 
-def _get_image(lrg, state=None, style=None, fmt="png"):
+def _get_image(lrg, state=None, style=None, fmt="png", checkorder=True):
     srv = japi.gs.service("image")
     
-    if state and not style:
+    if state is not None and style is None:
         if isinstance(state, dict):
             state = ginsim.state.get_ginsim_state(lrg, state)
         elif isinstance(state, pd.Series):
-            # FIXME: here we assume that the Series is using the proper order
-            # Fixing the index could be done with:
-            # state = state.reindex( ["Proper", "Node", "Order"], fill_value=-1 )
-            state = state.values.tobytes()
+            if checkorder:
+                state = state.reindex( [n.getId() for n in lrg.getNodeOrder() ], fill_value=-100 )
+            state = state.astype(np.byte).values.tobytes()
         
         style = srv.getStyle(lrg, state)
     
@@ -63,7 +63,7 @@ def is_ginsim_object(obj):
     return isinstance(obj, JavaObject) \
         and obj.getClass().getPackage().getName() == "org.ginsim.core.graph.regulatorygraph"
 
-def show(lrg, state=None, style=None, fmt=None, save=None, show=True):
+def show(lrg, state=None, style=None, fmt=None, save=None, show=True, checkorder=True):
     # Guess format or fix file extension when saving the image
     _supported_formats = set(('svg', 'png'))
     if fmt and fmt not in _supported_formats:
@@ -75,7 +75,7 @@ def show(lrg, state=None, style=None, fmt=None, save=None, show=True):
         if fmt: print("Unsupported format, revert to default")
         fmt = "png"
     
-    img = _get_image(lrg, state, style, fmt)
+    img = _get_image(lrg, state, style, fmt, checkorder)
 
     if save:
         if sfmt != fmt:
