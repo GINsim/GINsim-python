@@ -27,16 +27,10 @@ def load(filename, *args):
 def service(name):
     return japi.gs.service(name)
 
-def get_svg(lrg, style=None):
-    if style is not None:
-        return japi.gs.service("image").getSVG(lrg, style)
-    return japi.gs.service("image").getSVG(lrg)
-
-def get_image(lrg, state=None, style=None):
-    if style is not None:
-        return japi.gs.service("image").rawPNG(lrg, style)
-
-    if state is not None:
+def _get_image(lrg, state=None, style=None, fmt="png"):
+    srv = japi.gs.service("image")
+    
+    if state and not style:
         if isinstance(state, dict):
             state = ginsim.state.get_ginsim_state(lrg, state)
         elif isinstance(state, pd.Series):
@@ -44,9 +38,17 @@ def get_image(lrg, state=None, style=None):
             # Fixing the index could be done with:
             # state = state.reindex( ["Proper", "Node", "Order"], fill_value=-1 )
             state = state.values.tobytes()
-        return japi.gs.service("image").rawPNG(lrg, state)
-
-    return japi.gs.service("image").rawPNG(lrg)
+        
+        style = srv.getStyle(lrg, state)
+    
+    if fmt == "svg":
+        if style:
+            return srv.getSVG(lrg, style)
+        return srv.getSVG(lrg)
+    
+    if style:
+        return srv.rawPNG(lrg, style)
+    return srv.rawPNG(lrg)
 
 def lrg_style(lrg):
     return japi.gs.service("image").customStyleProvider(lrg)
@@ -59,12 +61,37 @@ def is_ginsim_object(obj):
         and obj.getClass().getPackage().getName() == "org.ginsim.core.graph.regulatorygraph"
 
 if IN_IPYTHON:
-    def show(lrg, state=None, style=None):
-        return show_image(get_image(lrg, state, style))
-
     from IPython.display import SVG
-    def show_svg(lrg, style=None):
-        return SVG( get_svg(lrg, style) )
+    
+    def show(lrg, state=None, style=None, fmt=None, save=None, show=True):
+        # Guess format or fix file extension when saving the image
+        _supported_formats = set(('svg', 'png'))
+        if fmt and fmt not in _supported_formats:
+            fmt = None
+        sfmt = save and save.split(".")[-1]
+        fmt = fmt or sfmt
+        if fmt not in _supported_formats:
+            fmt = "png"
+            print("Unsupported format, revert to %s" % fmt)
+        
+        img = _get_image(lrg, state, style, fmt)
+
+        if save:
+            if sfmt != fmt:
+                save = "%s.%s" % (save,fmt)
+                print("Saving as %s" % save)
+            if fmt == 'svg': mode = 'w'
+            else: mode = 'wb'
+            out = open(save, mode)
+            out.write(img)
+            out.close()
+
+        if not show: return
+
+        if fmt == "svg":
+            return SVG(img)
+        
+        return show_image(img)
 
 def to_biolqm(lrg):
     return lrg.getModel()
