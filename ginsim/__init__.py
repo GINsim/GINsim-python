@@ -60,38 +60,35 @@ def is_ginsim_object(obj):
     return isinstance(obj, JavaObject) \
         and obj.getClass().getPackage().getName() == "org.ginsim.core.graph.regulatorygraph"
 
-if IN_IPYTHON:
-    from IPython.display import SVG
+def show(lrg, state=None, style=None, fmt=None, save=None, show=True):
+    # Guess format or fix file extension when saving the image
+    _supported_formats = set(('svg', 'png'))
+    if fmt and fmt not in _supported_formats:
+        fmt = None
+    sfmt = save and save.split(".")[-1]
+    if sfmt not in _supported_formats: sfmt = None
+    fmt = fmt or sfmt
+    if fmt not in _supported_formats:
+        if fmt: print("Unsupported format, revert to default")
+        fmt = "png"
     
-    def show(lrg, state=None, style=None, fmt=None, save=None, show=True):
-        # Guess format or fix file extension when saving the image
-        _supported_formats = set(('svg', 'png'))
-        if fmt and fmt not in _supported_formats:
-            fmt = None
-        sfmt = save and save.split(".")[-1]
-        fmt = fmt or sfmt
-        if fmt not in _supported_formats:
-            fmt = "png"
-            print("Unsupported format, revert to %s" % fmt)
-        
-        img = _get_image(lrg, state, style, fmt)
+    img = _get_image(lrg, state, style, fmt)
 
-        if save:
-            if sfmt != fmt:
-                save = "%s.%s" % (save,fmt)
-                print("Saving as %s" % save)
-            if fmt == 'svg': mode = 'w'
-            else: mode = 'wb'
-            out = open(save, mode)
-            out.write(img)
-            out.close()
+    if save:
+        if sfmt != fmt:
+            save = "%s.%s" % (save,fmt)
+            print("Saving as %s" % save)
+        if fmt == 'svg': mode = 'w'
+        else: mode = 'wb'
+        out = open(save, mode)
+        out.write(img)
+        out.close()
 
-        if not show: return
+    if not show: return
 
-        if fmt == "svg":
-            return SVG(img)
-        
-        return show_image(img)
+    if not IN_IPYTHON: return img
+
+    return show_image(img, is_svg=(fmt=='svg'))
 
 def to_biolqm(lrg):
     return lrg.getModel()
