@@ -31,7 +31,9 @@ def load(filename, *args):
 def service(name):
     return japi.gs.service(name)
 
-def _get_image(lrg, state=None, style=None, fmt="png", checkorder=True):
+_default_image_format = "png"
+
+def _get_image(lrg, state=None, style=None, fmt=None, checkorder=True):
     srv = japi.gs.service("image")
     
     if state is not None and style is None:
@@ -43,6 +45,8 @@ def _get_image(lrg, state=None, style=None, fmt="png", checkorder=True):
             state = state.astype(np.byte).values.tobytes()
         
         style = srv.getStyle(lrg, state)
+    
+    if fmt is None: fmt = _default_image_format
     
     if fmt == "svg":
         if style:
@@ -73,7 +77,7 @@ def show(lrg, state=None, style=None, fmt=None, save=None, show=True, checkorder
     fmt = fmt or sfmt
     if fmt not in _supported_formats:
         if fmt: print("Unsupported format, revert to default")
-        fmt = "png"
+        fmt = _default_image_format
     
     img = _get_image(lrg, state, style, fmt, checkorder)
 
