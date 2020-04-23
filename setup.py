@@ -14,7 +14,7 @@ Provides interface to Java API of GINsim and BioLQM
 """,
     install_requires = [
         "py4j",
-        "colomoto_jupyter",
+        "colomoto_jupyter >= 0.6.3",
     ],
     packages = find_packages(),
     classifiers=[

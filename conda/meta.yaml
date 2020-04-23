@@ -24,7 +24,7 @@ requirements:
     - python
     - ginsim
     - py4j
-    - colomoto_jupyter
+    - colomoto_jupyter >= 0.6.3
 
 about:
   home:  http://ginsim.org/
