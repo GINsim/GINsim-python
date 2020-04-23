@@ -1,4 +1,5 @@
 
+import re
 import sys
 
 import biolqm
@@ -31,7 +32,7 @@ def load(filename, *args):
 def service(name):
     return japi.gs.service(name)
 
-_default_image_format = "png"
+_default_image_format = "svg"
 
 def _get_image(lrg, state=None, style=None, fmt=None, checkorder=True):
     srv = japi.gs.service("image")
@@ -67,7 +68,16 @@ def is_ginsim_object(obj):
     return isinstance(obj, JavaObject) \
         and obj.getClass().getPackage().getName() == "org.ginsim.core.graph.regulatorygraph"
 
-def show(lrg, state=None, style=None, fmt=None, save=None, show=True, checkorder=True):
+
+_re_undim = re.compile(r'(<svg [^>]*)(height|width)="[^"]*"')
+def _svg_undim(data):
+    for i in range(2):
+        data = _re_undim.sub(r"\1", data, count=1)
+    return data
+
+def show(lrg, state=None, style=None, fmt=None, save=None,
+        scale="auto", show=True, checkorder=True):
+
     # Guess format or fix file extension when saving the image
     _supported_formats = set(('svg', 'png'))
     if fmt and fmt not in _supported_formats:
@@ -78,7 +88,7 @@ def show(lrg, state=None, style=None, fmt=None, save=None, show=True, checkorder
     if fmt not in _supported_formats:
         if fmt: print("Unsupported format, revert to default")
         fmt = _default_image_format
-    
+
     img = _get_image(lrg, state, style, fmt, checkorder)
 
     if save:
@@ -90,10 +100,30 @@ def show(lrg, state=None, style=None, fmt=None, save=None, show=True, checkorder
             out.write(img)
         if IN_IPYTHON:
             display(FileLink(save, result_html_prefix="Saved as "))
+    if not show:
+        return
+    if not IN_IPYTHON:
+        return img
 
-    if not show: return
-
-    if not IN_IPYTHON: return img
+    if fmt == "svg":
+        dim = lrg.getDimension()
+        if not (scale == "auto" and dim.width < 800):
+            w, h = None, None
+            if scale != "auto":
+                if scale.endswith("%"):
+                    s = int(scale[:-1])/100
+                    # apply scaling to dim
+                    w = int(dim.width*s)
+                    h = int(dim.height*s)
+                else:
+                    w = scale
+            my_width = f'width="{w}"' if w is not None else ""
+            my_height = f'height="{h}"' if h is not None else ""
+            img = _svg_undim(img)
+            img = img.replace("<svg ",
+                f"<svg {my_width} {my_height} viewBox=\"0 0 {dim.width} {dim.height}\" ")
+            with open("/tmp/debug.svg", "w") as fp:
+                fp.write(img)
 
     return show_image(img, is_svg=(fmt=='svg'))
 
