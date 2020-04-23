@@ -122,8 +122,6 @@ def show(lrg, state=None, style=None, fmt=None, save=None,
             img = _svg_undim(img)
             img = img.replace("<svg ",
                 f"<svg {my_width} {my_height} viewBox=\"0 0 {dim.width} {dim.height}\" ")
-            with open("/tmp/debug.svg", "w") as fp:
-                fp.write(img)
 
     return show_image(img, is_svg=(fmt=='svg'))
 
