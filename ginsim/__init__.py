@@ -77,7 +77,7 @@ def _svg_undim(data):
     return data
 
 def show(lrg, state=None, style=None, fmt=None, save=None,
-        scale="auto", show=True, checkorder=True):
+        scale="auto", svg_display="img", show=True, checkorder=True):
 
     # Guess format or fix file extension when saving the image
     _supported_formats = set(('svg', 'png'))
@@ -108,16 +108,28 @@ def show(lrg, state=None, style=None, fmt=None, save=None,
 
     if fmt == "svg":
         dim = lrg.getDimension()
-        svg64 = base64.b64encode(img.encode("utf-8")).decode()
+        width, height = None, None
+        if scale.endswith("%"):
+            scale = int(scale[:-1])/100
         if scale == "auto":
             width = f"{dim.width}px" if dim.width <= 800 else "100%"
-        elif scale.endswith("%"):
-            scale = int(scale[:-1])/100
+        elif not isinstance(scale, str):
             width = f"{int(dim.width*scale)}px"
+            height = f"{int(dim.height*scale)}px"
         else:
             width = scale
-        html = f'<img class="unconfined" width="{width}" src="data:image/svg+xml;base64,{svg64}">'
-        return HTML(html)
+        if svg_display == "img":
+            svg64 = base64.b64encode(img.encode("utf-8")).decode()
+            html = f'<img class="unconfined" width="{width}" src="data:image/svg+xml;base64,{svg64}">'
+            return HTML(html)
+        elif svg_display == "inline":
+            my_width = f'width="{width}"' if width is not None else ""
+            my_height = f'height="{height}"' if height is not None else ""
+            img = _svg_undim(img)
+            img = img.replace("<svg ",
+                f"<svg {my_width} {my_height} viewBox=\"0 0 {dim.width} {dim.height}\" ")
+        else:
+            raise TypeError("Invalid value for svg_display parameter")
 
     return show_image(img, is_svg=(fmt=='svg'))
 
