@@ -18,6 +18,9 @@ import ginsim.state
 
 from py4j.java_gateway import JavaObject
 
+if IN_IPYTHON:
+    from IPython.display import display, FileLink
+
 def load(filename, *args):
     filename = ensure_localfile(filename)
     obj = japi.gs.load(filename, *args)
@@ -78,11 +81,11 @@ def show(lrg, state=None, style=None, fmt=None, save=None, show=True):
         if sfmt != fmt:
             save = "%s.%s" % (save,fmt)
             print("Saving as %s" % save)
-        if fmt == 'svg': mode = 'w'
-        else: mode = 'wb'
-        out = open(save, mode)
-        out.write(img)
-        out.close()
+        mode = "w" if fmt == "svg" else "wb"
+        with open(save, mode) as out:
+            out.write(img)
+        if IN_IPYTHON:
+            display(FileLink(save, result_html_prefix="Saved as "))
 
     if not show: return
 
