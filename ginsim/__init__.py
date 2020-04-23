@@ -1,4 +1,5 @@
 
+import base64
 import re
 import sys
 
@@ -21,7 +22,7 @@ import ginsim.state
 from py4j.java_gateway import JavaObject
 
 if IN_IPYTHON:
-    from IPython.display import display, FileLink
+    from IPython.display import display, FileLink, HTML
 
 def load(filename, *args):
     filename = ensure_localfile(filename)
@@ -107,21 +108,16 @@ def show(lrg, state=None, style=None, fmt=None, save=None,
 
     if fmt == "svg":
         dim = lrg.getDimension()
-        if not (scale == "auto" and dim.width < 800):
-            w, h = None, None
-            if scale != "auto":
-                if scale.endswith("%"):
-                    s = int(scale[:-1])/100
-                    # apply scaling to dim
-                    w = int(dim.width*s)
-                    h = int(dim.height*s)
-                else:
-                    w = scale
-            my_width = f'width="{w}"' if w is not None else ""
-            my_height = f'height="{h}"' if h is not None else ""
-            img = _svg_undim(img)
-            img = img.replace("<svg ",
-                f"<svg {my_width} {my_height} viewBox=\"0 0 {dim.width} {dim.height}\" ")
+        svg64 = base64.b64encode(img.encode("utf-8")).decode()
+        if scale == "auto":
+            width = f"{dim.width}px" if dim.width <= 800 else "100%"
+        elif scale.endswith("%"):
+            scale = int(scale[:-1])/100
+            width = f"{int(dim.width*scale)}px"
+        else:
+            width = scale
+        html = f'<img class="unconfined" width="{width}" src="data:image/svg+xml;base64,{svg64}">'
+        return HTML(html)
 
     return show_image(img, is_svg=(fmt=='svg'))
 
