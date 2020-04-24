@@ -129,7 +129,7 @@ def show(lrg, state=None, style=None, fmt=None, save=None,
             img = img.replace("<svg ",
                 f"<svg {my_width} {my_height} viewBox=\"0 0 {dim.width} {dim.height}\" ")
         else:
-            raise TypeError("Invalid value for svg_display parameter")
+            raise TypeError("Invalid value for show parameter")
 
     return show_image(img, is_svg=(fmt=='svg'))
 
