@@ -77,7 +77,7 @@ def _svg_undim(data):
     return data
 
 def show(lrg, state=None, style=None, fmt=None, save=None,
-        scale="auto", svg_display="img", show=True, checkorder=True):
+        scale="auto", show=True, checkorder=True):
 
     # Guess format or fix file extension when saving the image
     _supported_formats = set(('svg', 'png'))
@@ -118,11 +118,11 @@ def show(lrg, state=None, style=None, fmt=None, save=None,
             height = f"{int(dim.height*scale)}px"
         else:
             width = scale
-        if svg_display == "img":
+        if show == True or show == "img":
             svg64 = base64.b64encode(img.encode("utf-8")).decode()
             html = f'<img class="unconfined" width="{width}" src="data:image/svg+xml;base64,{svg64}">'
             return HTML(html)
-        elif svg_display == "inline":
+        elif show == "inline":
             my_width = f'width="{width}"' if width is not None else ""
             my_height = f'height="{height}"' if height is not None else ""
             img = _svg_undim(img)
