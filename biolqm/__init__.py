@@ -253,6 +253,13 @@ def to_pint(model, simplify=True):
         an = an.simplify()
     return an
 
+def to_pyboolnet(model):
+    bnetfile = new_output_file("bnet")
+    assert save(model, bnetfile, "bnet")
+    PyBoolNet = import_colomoto_tool("PyBoolNet")
+    bn = PyBoolNet.FileExchange.bnet2primes(bnetfile)
+    return bn
+
 def to_minibn(model, simplify=True, ensure_boolean=False):
     from colomoto import minibn
     if ensure_boolean or model.isBoolean():
