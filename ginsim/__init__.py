@@ -145,6 +145,9 @@ def to_pint(lrg, simplify=True):
 def to_pyboolnet(lrg):
     return biolqm.to_pyboolnet(lrg.getModel())
 
+def to_booleannet(model, mode='async'):
+    return biolqm.to_booleannet(lrg.getModel(), mode)
+
 def to_minibn(lrg, **opts):
     return biolqm.to_minibn(lrg.getModel(), **opts)
 

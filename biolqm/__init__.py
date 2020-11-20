@@ -260,6 +260,15 @@ def to_pyboolnet(model):
     bn = PyBoolNet.FileExchange.bnet2primes(bnetfile)
     return bn
 
+def to_booleannet(model, mode='async'):
+    bnetfile = new_output_file("booleannet")
+    assert save(model, bnetfile, "booleannet")
+    with open(bnetfile,'r') as f:
+        rules=f.read()
+        rules=rules.replace('#BOOLEAN RULES','')
+    boolean2 = import_colomoto_tool("boolean2")
+    return boolean2.Model(rules, mode)
+
 def to_minibn(model, simplify=True, ensure_boolean=False):
     from colomoto import minibn
     if ensure_boolean or model.isBoolean():
