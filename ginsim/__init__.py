@@ -185,11 +185,6 @@ def to_nusmv(lrg, update_mode="async"):
     }
     cfg.setUpdatePolicy(d_update[update_mode])
 
-    ## configure input nodes
-    sinit = japi.gs.associated(lrg, "initialState", True)
-    for inputNode in sinit.getInputNodes():
-        cfg.addFixedInput(str(inputNode))
-
     smvfile = new_output_file("smv")
     serv.run(cfg, smvfile)
     from colomoto.modelchecking import ColomotoNuSMV
