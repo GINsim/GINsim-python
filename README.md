@@ -16,6 +16,5 @@ conda install -c colomoto ginsim-python
 
 ```
 pip install ginsim
-python -m ginsim_setup
 ```
 

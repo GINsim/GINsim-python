@@ -1,7 +1,17 @@
 
+from distutils.command.install import install
 from setuptools import setup, find_packages
 
 NAME = 'ginsim'
+
+class post_install(install):
+    def run(self):
+        super().run()
+        from colomoto.setup_helper import setup as colomoto_setup
+        colomoto_setup({"pkg": "colomoto/ginsim",
+                "check_progs": ["GINsim"]},
+            {"pkg": "potassco/clingo",
+                "check_progs": ["clingo"]}, force=True, parse_args=False)
 
 setup(name=NAME,
     version='9999',
@@ -23,5 +33,8 @@ Provides interface to Java API of GINsim and BioLQM
         "Topic :: Scientific/Engineering :: Bio-Informatics",
     ],
     keywords="computational systems biology",
+    cmdclass = {
+        "install": post_install,
+    }
 )
 
