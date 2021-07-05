@@ -3,13 +3,12 @@ name: Python package checking
 on: [push, pull_request]
 
 jobs:
-  build:
-
+  pip-test:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.7]
+        python-version: [3.9]
 
     steps:
     - uses: actions/checkout@v1
@@ -32,3 +31,17 @@ jobs:
     #  run: |
     #    pip install pytest
     #    pytest
+  conda-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: s-weigand/setup-conda@v1
+    - name: prepare
+      run: |
+        conda install -y conda-build conda-verify
+        conda config --set channel_priority strict
+        conda config --set anaconda_upload no
+    - name: build
+      run: |
+        cd conda
+        conda build -c defaults -c conda-forge -c colomoto .
