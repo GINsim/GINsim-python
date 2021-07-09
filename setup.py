@@ -1,12 +1,16 @@
 
 from distutils.command.install import install
 from setuptools import setup, find_packages
+import os
 
 NAME = 'ginsim'
 
 class post_install(install):
     def run(self):
         super().run()
+        if os.path.exists(os.path.join(sys.prefix, 'conda-meta')):
+            print("You seem to be within a conda environment, nothing to do.")
+            return
         from colomoto.setup_helper import setup as colomoto_setup
         colomoto_setup({"pkg": "colomoto/ginsim",
                 "check_progs": ["GINsim"]},
