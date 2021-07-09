@@ -5,6 +5,8 @@ from subprocess import PIPE
 
 from py4j.java_gateway import JavaGateway, GatewayParameters
 
+import colomoto.setup_helper
+
 __env = {}
 __registered = []
 
