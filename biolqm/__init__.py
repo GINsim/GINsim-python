@@ -256,8 +256,8 @@ def to_pint(model, simplify=True):
 def to_pyboolnet(model):
     bnetfile = new_output_file("bnet")
     assert save(model, bnetfile, "bnet")
-    PyBoolNet = import_colomoto_tool("PyBoolNet")
-    bn = PyBoolNet.FileExchange.bnet2primes(bnetfile)
+    from pyboolnet.file_exchange import bnet2primes
+    bn = bnet2primes(bnetfile)
     return bn
 
 def to_booleannet(model, mode='async'):
