@@ -2,9 +2,17 @@
 from colomoto_jupyter import IN_IPYTHON, jupyter_setup
 
 if IN_IPYTHON:
+    from colomoto_jupyter.ipylab import ipylab_insert_snippet, \
+        ipylab_upload_and_process_filename
+
+    def upload(model):
+        def callback(filename:str):
+            ipylab_insert_snippet(f"{model} = ginsim.load('{filename}')", True)
+        ipylab_upload_and_process_filename(callback)
+
     menu = [
         {"name": "Upload model",
-            "snippet": ["lrg = ginsim.upload()"]},
+            "snippet": ["ginsim.upload('lrg')"]},
         {"name": "Load model",
             "snippet": ["lrg = ginsim.load(\"model.zginml\")"]},
         "---",
@@ -30,16 +38,15 @@ if IN_IPYTHON:
     ]
     toolbar = [
         {"name": "upload", "setup": {
-            "icon": "fa-upload",
-            "help": "Upload model",
-            "handler": "action_upload_model"}},
+            "icon": "fa fa-upload",
+            "label" : "GINsim",
+            "help": "Upload GINsim model",
+            "handler": ipylab_insert_snippet,
+            "args" : { 'snippet': "ginsim.upload('lrg')" },
+            "after" : "biolqm_upload"
+        }},
     ]
     js_api = {
-    "action_upload_model": """function() {
-        var cell = Jupyter.notebook.get_selected_cell();
-        cell.set_text('lrg = '+ginsim_jsapi.module_alias+'.upload()');
-        cell.focus_editor();
-    }""",
     }
     jupyter_setup("ginsim",
         label="GINsim",
@@ -47,11 +54,6 @@ if IN_IPYTHON:
         menu=menu,
         toolbar=toolbar,
         js_api=js_api)
-
-
-    from colomoto_jupyter.upload import jupyter_upload
-    def upload():
-        return jupyter_upload("upload", "load")
 
 else:
     def upload():
