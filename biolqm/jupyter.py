@@ -2,6 +2,14 @@
 from colomoto_jupyter import IN_IPYTHON, jupyter_setup
 
 if IN_IPYTHON:
+    from colomoto_jupyter.ipylab import ipylab_insert_snippet, \
+        ipylab_upload_and_process_filename
+
+    def upload(model):
+        def callback(filename:str):
+            ipylab_insert_snippet(f"{model} = biolqm.load('{filename}')",
+                                  run_it = True)
+        ipylab_upload_and_process_filename(callback)
 
     def export_entry(d, f, e=None):
         if e is None:
@@ -11,29 +19,35 @@ if IN_IPYTHON:
 
     menu = [
         {"name": "Upload model",
-            "snippet": ["lqm = biolqm.upload()"]},
+            "snippet": ["biolqm.upload('lqm')"]},
         {"name": "Load model",
             "snippet": ["lqm = biolqm.load(\"model.sbml\")"]},
         "---",
-        {"name":"Export to file",
-            "sub-menu": [
-                export_entry("SBML-qual v1.0", "sbml"),
-                "Functions formats",
-                export_entry("BoolNet", "bnet"),
-                export_entry("BooleanNet", "booleannet"),
-                export_entry("BoolSim", "boolsim"),
-                export_entry("Raw Boolean functions", "boolfunctions"),
-                export_entry("Truth table", "tt"),
-                "Petri net formats",
-                export_entry("APNN", "apnn"),
-                export_entry("INA", "ina"),
-                export_entry("PNML", "pnml"),
-                "Dedicated formats",
-                export_entry("GINML", "ginml"),
-                export_entry("GNA non-xml", "gna"),
-                export_entry("MaBoSS", "bnd"),
-                export_entry("Pint", "an"),
-            ]},
+        {"name": "Export to file",
+         "sub-menu": [
+             export_entry("SBML-qual v1.0", "sbml"),
+             {"name": "Functions formats",
+              "sub-menu": [
+                  export_entry("BoolNet", "bnet"),
+                  export_entry("BooleanNet", "booleannet"),
+                  export_entry("BoolSim", "boolsim"),
+                  export_entry("Raw Boolean functions", "boolfunctions"),
+                  export_entry("Truth table", "tt")]},
+             {"name": "Petri net formats",
+              "sub-menu": [
+                  export_entry("APNN", "apnn"),
+                  export_entry("INA", "ina"),
+                  export_entry("PNML", "pnml")
+              ]
+              },
+             {"name": "Dedicated formats",
+              "sub-menu": [
+                  export_entry("GINML", "ginml"),
+                  export_entry("GNA non-xml", "gna"),
+                  export_entry("MaBoSS", "bnd"),
+                  export_entry("Pint", "an"),
+              ]}
+         ]},
         {"name":"Convert to tool",
             "sub-menu": [
             {"name": "GINsim", "snippet": [
@@ -71,28 +85,23 @@ if IN_IPYTHON:
     ]
     toolbar = [
         {"name": "upload", "setup": {
-            "icon": "fa-upload",
-            "help": "Upload model",
-            "handler": "action_upload_model"}},
+            "icon": "fa fa-upload",
+            "label" : "bioLQM",
+            "help": "Upload bioLQM model",
+            "handler": ipylab_insert_snippet,
+            "args" : { "snippet" : "biolqm.upload('lqm')" }
+        }},
     ]
+
     js_api = {
-    "action_upload_model": """function() {
-        var cell = Jupyter.notebook.get_selected_cell();
-        cell.set_text('lqm = '+biolqm_jsapi.module_alias+'.upload()');
-        cell.focus_editor();
-    }""",
     }
+
     jupyter_setup("biolqm",
         label="bioLQM",
         color="#00007f", # for menu and toolbar
         menu=menu,
         toolbar=toolbar,
         js_api=js_api)
-
-
-    from colomoto_jupyter.upload import jupyter_upload
-    def upload():
-        return jupyter_upload("upload", "load")
 
 else:
     def upload():
