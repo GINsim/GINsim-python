@@ -1,15 +1,7 @@
 
-from colomoto_jupyter import IN_IPYTHON, jupyter_setup
+from colomoto_jupyter import IN_IPYTHON, HAS_IPYLAB, jupyter_setup
 
 if IN_IPYTHON:
-    from colomoto_jupyter.ipylab import ipylab_insert_snippet, \
-        ipylab_upload_and_process_filename
-
-    def upload(model):
-        def callback(filename:str):
-            ipylab_insert_snippet(f"{model} = ginsim.load('{filename}')", True)
-        ipylab_upload_and_process_filename(callback)
-
     menu = [
         {"name": "Upload model",
             "snippet": ["ginsim.upload('lrg')"]},
@@ -41,19 +33,21 @@ if IN_IPYTHON:
             "icon": "fa fa-upload",
             "label" : "GINsim",
             "help": "Upload GINsim model",
-            "handler": ipylab_insert_snippet,
+            "handler": "insert_snippet",
             "args" : { 'snippet': "ginsim.upload('lrg')" },
             "after" : "biolqm_upload"
         }},
     ]
-    js_api = {
-    }
     jupyter_setup("ginsim",
         label="GINsim",
         color="blue", # for menu and toolbar
         menu=menu,
-        toolbar=toolbar,
-        js_api=js_api)
+        toolbar=toolbar)
+
+    if HAS_IPYLAB:
+        from colomoto_jupyter.upload import jupyter_upload
+        def upload(model_var: str):
+            return jupyter_upload("ginsim", model_var, "load")
 
 else:
     def upload():
