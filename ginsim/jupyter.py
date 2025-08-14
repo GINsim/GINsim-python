@@ -1,10 +1,10 @@
 
-from colomoto_jupyter import IN_IPYTHON, jupyter_setup
+from colomoto_jupyter import IN_IPYTHON, HAS_IPYLAB, jupyter_setup
 
 if IN_IPYTHON:
     menu = [
         {"name": "Upload model",
-            "snippet": ["lrg = ginsim.upload()"]},
+            "snippet": ["ginsim.upload('lrg')"]},
         {"name": "Load model",
             "snippet": ["lrg = ginsim.load(\"model.zginml\")"]},
         "---",
@@ -30,28 +30,24 @@ if IN_IPYTHON:
     ]
     toolbar = [
         {"name": "upload", "setup": {
-            "icon": "fa-upload",
-            "help": "Upload model",
-            "handler": "action_upload_model"}},
+            "icon": "fa fa-upload",
+            "label" : "GINsim",
+            "help": "Upload GINsim model",
+            "handler": "insert_snippet",
+            "args" : { 'snippet': "ginsim.upload('lrg')" },
+            "after" : "biolqm_upload"
+        }},
     ]
-    js_api = {
-    "action_upload_model": """function() {
-        var cell = Jupyter.notebook.get_selected_cell();
-        cell.set_text('lrg = '+ginsim_jsapi.module_alias+'.upload()');
-        cell.focus_editor();
-    }""",
-    }
     jupyter_setup("ginsim",
         label="GINsim",
         color="blue", # for menu and toolbar
         menu=menu,
-        toolbar=toolbar,
-        js_api=js_api)
+        toolbar=toolbar)
 
-
-    from colomoto_jupyter.upload import jupyter_upload
-    def upload():
-        return jupyter_upload("upload", "load")
+    if HAS_IPYLAB:
+        from colomoto_jupyter.upload import jupyter_upload
+        def upload(model_var: str):
+            return jupyter_upload("ginsim", model_var, "load")
 
 else:
     def upload():
