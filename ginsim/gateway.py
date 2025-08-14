@@ -31,7 +31,6 @@ def start():
     param = GatewayParameters(port=port, auto_convert=True, auto_field=True)
     __env["gw"] = JavaGateway(gateway_parameters=param)
 
-    global japi
     japi.java = __env["gw"]
     japi.gs = __env["gw"].entry_point
     japi.lqm = japi.gs.LQM()
@@ -41,7 +40,6 @@ def start():
 def stop():
     if not __env:
         return
-    global japi
     japi.clear()
     __env["gw"].shutdown()
     __env["proc"].terminate()
