@@ -34,7 +34,7 @@ jobs:
     - uses: s-weigand/setup-conda@v1
     - name: prepare
       run: |
-        conda install -y anaconda-client conda-build conda-verify
+        conda install -y python=3.12 anaconda-client conda-build conda-verify
         conda config --set channel_priority strict
         conda config --set anaconda_upload yes
     - name: build
