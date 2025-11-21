@@ -1,7 +1,11 @@
 
 from colomoto_jupyter import IN_IPYTHON, jupyter_setup
+try:
+    from colomoto_jupyter import HAS_IPYLAB
+except:
+    HAS_IPYLAB = False
 
-if IN_IPYTHON:
+if HAS_IPYLAB:
     from colomoto_jupyter.ipylab import ipylab_insert_snippet, \
         ipylab_upload_and_process_filename
 
