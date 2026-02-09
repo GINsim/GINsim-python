@@ -1,7 +1,7 @@
 
 from colomoto_jupyter import IN_IPYTHON, HAS_IPYLAB, jupyter_setup
 
-if IN_IPYTHON:
+if HAS_IPYLAB:
     menu = [
         {"name": "Upload model",
             "snippet": ["ginsim.upload('lrg')"]},
@@ -44,12 +44,11 @@ if IN_IPYTHON:
         menu=menu,
         toolbar=toolbar)
 
-    if HAS_IPYLAB:
-        from colomoto_jupyter.upload import jupyter_upload
-        def upload(model_var: str):
-            return jupyter_upload("ginsim", model_var, "load")
+    from colomoto_jupyter.upload import jupyter_upload
+    def upload(model_var: str):
+        return jupyter_upload("ginsim", model_var, "load")
 
 else:
-    def upload():
-        raise NotImplementedError
+    def upload(*args):
+        raise NotImplementedError("You must install ipylab and run the code in Jupyter")
 
